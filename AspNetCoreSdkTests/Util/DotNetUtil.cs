@@ -32,6 +32,12 @@ namespace AspNetCoreSdkTests.Util
             return RunDotNet("build --no-restore", workingDirectory, GetEnvironment(workingDirectory));
         }
 
+        public static (Process Process, StringBuilder OutputBuilder, StringBuilder ErrorBuilder) Run(string workingDirectory)
+        {
+            // Bind to dynamic port 0 to avoid port conflicts during parallel tests
+            return StartDotNet("run --no-restore --urls http://127.0.0.1:0;https://127.0.0.1:0", workingDirectory, GetEnvironment(workingDirectory));
+        }
+
         private static string RunDotNet(string arguments, string workingDirectory,
             IEnumerable<KeyValuePair<string, string>> environment = null, bool throwOnError = true)
         {

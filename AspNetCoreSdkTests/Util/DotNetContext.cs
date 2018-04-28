@@ -1,5 +1,6 @@
 ﻿using AspNetCoreSdkTests.Templates;
 using System.Collections.Generic;
+using System.Net.Http;
 
 namespace AspNetCoreSdkTests.Util
 {
@@ -18,6 +19,11 @@ namespace AspNetCoreSdkTests.Util
         public string Build()
         {
             return DotNet.Build(Path);
+        }
+
+        public (string, string) Run()
+        {
+            return (null, null);
         }
 
         public IEnumerable<string> GetObjFiles()
