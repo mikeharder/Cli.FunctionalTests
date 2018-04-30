@@ -54,9 +54,8 @@ namespace AspNetCoreSdkTests
                 context.New(template);
                 context.Restore(nuGetConfig);
                 var (httpUrl, httpsUrl) = context.Run();
-
-                CollectionAssert.AreEquivalent(template.ExpectedObjFilesAfterBuild, context.GetObjFiles());
-                CollectionAssert.AreEquivalent(template.ExpectedBinFilesAfterBuild, context.GetBinFiles());
+                Console.WriteLine(httpUrl);
+                Console.WriteLine(httpsUrl);
             }
         }
     }
