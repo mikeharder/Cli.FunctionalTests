@@ -29,7 +29,6 @@ namespace AspNetCoreSdkTests.Templates
             "appsettings.json",
             $"{Name}.runtimeconfig.json",
             "web.config",
-            Path.Combine("wwwroot", "favicon.ico"),
         });
     }
 }

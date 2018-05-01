@@ -14,6 +14,7 @@ namespace AspNetCoreSdkTests.Templates
 
         public override IEnumerable<string> ExpectedFilesAfterPublish => Enumerable.Concat(base.ExpectedFilesAfterPublish, new[]
         {
+            Path.Combine("wwwroot", "favicon.ico"),
             Path.Combine("ClientApp", "dist", "3rdpartylicenses.txt"),
             Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.448c34a56d699c29117a.woff2"),
             Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.89889688147bd7575d63.svg"),

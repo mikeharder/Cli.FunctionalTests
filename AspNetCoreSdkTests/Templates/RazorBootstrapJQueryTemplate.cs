@@ -8,6 +8,7 @@ namespace AspNetCoreSdkTests.Templates
     {
         public override IEnumerable<string> ExpectedFilesAfterPublish => Enumerable.Concat(base.ExpectedFilesAfterPublish, new[]
         {
+            Path.Combine("wwwroot", "favicon.ico"),
             Path.Combine("wwwroot", "css", "site.css"),
             Path.Combine("wwwroot", "css", "site.min.css"),
             Path.Combine("wwwroot", "images", "banner1.svg"),
