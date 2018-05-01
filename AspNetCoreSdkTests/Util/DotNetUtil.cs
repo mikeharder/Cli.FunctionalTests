@@ -39,7 +39,7 @@ namespace AspNetCoreSdkTests.Util
 
         public static (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) Run(string workingDirectory)
         {
-            return StartDotNet("run --no-build {_urls}", workingDirectory, GetEnvironment(workingDirectory));
+            return StartDotNet($"run --no-build {_urls}", workingDirectory, GetEnvironment(workingDirectory));
         }
 
         internal static (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) Exec(string workingDirectory, string name)
