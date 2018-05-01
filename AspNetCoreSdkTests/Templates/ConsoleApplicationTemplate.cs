@@ -19,8 +19,8 @@ namespace AspNetCoreSdkTests.Templates
 
         public override IEnumerable<string> ExpectedBinFilesAfterBuild => Enumerable.Concat(base.ExpectedBinFilesAfterBuild, new[]
         {
-            $"{Name}.runtimeconfig.json",
             $"{Name}.runtimeconfig.dev.json",
+            $"{Name}.runtimeconfig.json",
         }.Select(p => Path.Combine(OutputPath, p)));
 
         public override IEnumerable<string> ExpectedFilesAfterPublish => Enumerable.Concat(base.ExpectedFilesAfterPublish, new[]
