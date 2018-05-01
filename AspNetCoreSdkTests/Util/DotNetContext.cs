@@ -36,26 +36,33 @@ namespace AspNetCoreSdkTests.Util
         public (string httpUrl, string httpsUrl) Run()
         {
             _runProcess = DotNetUtil.Run(Path);
-            return ScrapeUrls(_runProcess.OutputBuilder);
+            return ScrapeUrls(_runProcess);
         }
 
         public (string httpUrl, string httpsUrl) Exec()
         {
             _execProcess = DotNetUtil.Exec(Path, Template.Name);
-            return ScrapeUrls(_execProcess.OutputBuilder);
+            return ScrapeUrls(_execProcess);
         }
 
-        private (string httpUrl, string httpsUrl) ScrapeUrls(ConcurrentStringBuilder outputBuilder)
+        private (string httpUrl, string httpsUrl) ScrapeUrls(
+            (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) process)
         {
             // Extract URLs from output
             while (true)
             {
-                var output = outputBuilder.ToString();
+                var output = process.OutputBuilder.ToString();
                 if (output.Contains("Application started"))
                 {
                     var httpUrl = Regex.Match(output, @"Now listening on: (http:\S*)").Groups[1].Value;
                     var httpsUrl = Regex.Match(output, @"Now listening on: (https:\S*)").Groups[1].Value;
                     return (httpUrl, httpsUrl);
+                }
+                else if (process.Process.HasExited)
+                {
+                    var startInfo = process.Process.StartInfo;
+                    throw new InvalidOperationException(
+                        $"Failed to start process '{startInfo.FileName} {startInfo.Arguments}'" + Environment.NewLine + output);
                 }
                 else
                 {
