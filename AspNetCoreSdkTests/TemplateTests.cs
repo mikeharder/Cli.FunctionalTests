@@ -7,7 +7,7 @@ using System.Net;
 namespace AspNetCoreSdkTests
 {
     [TestFixture]
-    public class FrameworkDependent
+    public class TemplateTests
     {
         [Test]
         [TestCaseSource(nameof(RestoreData))]
@@ -48,19 +48,24 @@ namespace AspNetCoreSdkTests
 
         public static IEnumerable<Template> RestoreData = new[]
         {
-            Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.None),
-            
+            // Framework-dependent
+            Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
             // Offline restore currently not supported for RazorClassLibrary template (https://github.com/aspnet/Universe/issues/1123)
-            Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg),
+            Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.None),
+            Template.GetInstance<WebTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<RazorTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<MvcTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<AngularTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<ReactTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<ReactReduxTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
+            Template.GetInstance<WebApiTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
 
-            Template.GetInstance<WebTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<RazorTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<MvcTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<AngularTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<ReactTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<ReactReduxTemplate>(NuGetPackageSource.None),
-            Template.GetInstance<WebApiTemplate>(NuGetPackageSource.None),
+            // Self-contained
+            // ClassLibrary does not require a package source, even for self-contained deployments
+            Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Win_x64),
+
+            Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.EnvironmentVariable, RuntimeIdentifier.Win_x64),
         };
 
         public static IEnumerable<Template> BuildData => RestoreData;
