@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -136,7 +137,7 @@ namespace AspNetCoreSdkTests.Templates
             Path.Combine("refs", "System.Xml.XPath.XDocument.dll"),
         }.Select(p => Path.Combine(OutputPath, p)));
 
-        public override IEnumerable<string> ExpectedFilesAfterPublish => Enumerable.Concat(base.ExpectedFilesAfterPublish, new[]
+        private IEnumerable<string> _commonAdditionalFilesAfterPublish = new[]
         {
             "Microsoft.AspNetCore.Antiforgery.dll",
             "Microsoft.AspNetCore.Authentication.Abstractions.dll",
@@ -203,41 +204,6 @@ namespace AspNetCoreSdkTests.Templates
             "Microsoft.Win32.Registry.dll",
             "Newtonsoft.Json.Bson.dll",
             "Newtonsoft.Json.dll",
-            Path.Combine("runtimes", "debian.8-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "fedora.23-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "fedora.24-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "opensuse.13.2-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "opensuse.42.1-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "osx", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
-            Path.Combine("runtimes", "osx.10.10-x64", "native", "System.Security.Cryptography.Native.Apple.dylib"),
-            Path.Combine("runtimes", "osx.10.10-x64", "native", "System.Security.Cryptography.Native.OpenSsl.dylib"),
-            Path.Combine("runtimes", "rhel.7-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "ubuntu.14.04-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "ubuntu.16.04-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "ubuntu.16.10-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.1", "System.Runtime.InteropServices.RuntimeInformation.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Diagnostics.FileVersionInfo.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.IO.Compression.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Security.Cryptography.Csp.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Security.Cryptography.Encoding.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Text.Encoding.CodePages.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.OpenSsl.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.X509Certificates.dll"),
-            Path.Combine("runtimes", "unix", "lib", "netstandard2.0", "Microsoft.Win32.Registry.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.1", "System.Runtime.InteropServices.RuntimeInformation.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Diagnostics.FileVersionInfo.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.IO.Compression.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.AccessControl.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Cryptography.Csp.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Cryptography.Encoding.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Principal.Windows.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Text.Encoding.CodePages.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.Cng.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.X509Certificates.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard2.0", "Microsoft.Win32.Registry.dll"),
-            Path.Combine("runtimes", "win", "lib", "netstandard2.0", "System.Security.Cryptography.Pkcs.dll"),
             "System.AppContext.dll",
             "System.Buffers.dll",
             "System.Collections.Concurrent.dll",
@@ -279,6 +245,86 @@ namespace AspNetCoreSdkTests.Templates
             "System.Xml.XmlDocument.dll",
             "System.Xml.XPath.dll",
             "System.Xml.XPath.XDocument.dll",
-        });
+        };
+
+        private IDictionary<RuntimeIdentifier, IEnumerable<string>> _additionalFilesAfterPublish =>
+            new Dictionary<RuntimeIdentifier, IEnumerable<string>>()
+            {
+                { RuntimeIdentifier.None, Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
+                    {
+                        Path.Combine("runtimes", "debian.8-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "fedora.23-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "fedora.24-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "opensuse.13.2-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "opensuse.42.1-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "osx", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
+                        Path.Combine("runtimes", "osx.10.10-x64", "native", "System.Security.Cryptography.Native.Apple.dylib"),
+                        Path.Combine("runtimes", "osx.10.10-x64", "native", "System.Security.Cryptography.Native.OpenSsl.dylib"),
+                        Path.Combine("runtimes", "rhel.7-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "ubuntu.14.04-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "ubuntu.16.04-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "ubuntu.16.10-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.1", "System.Runtime.InteropServices.RuntimeInformation.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Diagnostics.FileVersionInfo.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.IO.Compression.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Security.Cryptography.Csp.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Security.Cryptography.Encoding.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.3", "System.Text.Encoding.CodePages.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.OpenSsl.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard1.6", "System.Security.Cryptography.X509Certificates.dll"),
+                        Path.Combine("runtimes", "unix", "lib", "netstandard2.0", "Microsoft.Win32.Registry.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.1", "System.Runtime.InteropServices.RuntimeInformation.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Diagnostics.FileVersionInfo.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.IO.Compression.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.AccessControl.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Cryptography.Csp.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Cryptography.Encoding.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Security.Principal.Windows.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.3", "System.Text.Encoding.CodePages.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.Algorithms.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.Cng.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard1.6", "System.Security.Cryptography.X509Certificates.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard2.0", "Microsoft.Win32.Registry.dll"),
+                        Path.Combine("runtimes", "win", "lib", "netstandard2.0", "System.Security.Cryptography.Pkcs.dll"),
+                    })
+                },
+                { RuntimeIdentifier.Win_x64, Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
+                    {
+                        "System.Collections.dll",
+                        "System.Console.dll",
+                        "System.Diagnostics.Debug.dll",
+                        "System.Diagnostics.FileVersionInfo.dll",
+                        "System.Diagnostics.Tools.dll",
+                        "System.Diagnostics.Tracing.dll",
+                        "System.Globalization.Calendars.dll",
+                        "System.Globalization.dll",
+                        "System.IO.Compression.dll",
+                        "System.IO.dll",
+                        "System.IO.FileSystem.dll",
+                        "System.Reflection.dll",
+                        "System.Reflection.Extensions.dll",
+                        "System.Reflection.Primitives.dll",
+                        "System.Resources.ResourceManager.dll",
+                        "System.Runtime.dll",
+                        "System.Runtime.Extensions.dll",
+                        "System.Runtime.Handles.dll",
+                        "System.Runtime.InteropServices.dll",
+                        "System.Runtime.InteropServices.RuntimeInformation.dll",
+                        "System.Security.Cryptography.Algorithms.dll",
+                        "System.Security.Cryptography.Csp.dll",
+                        "System.Security.Cryptography.Encoding.dll",
+                        "System.Security.Cryptography.X509Certificates.dll",
+                        "System.Text.Encoding.CodePages.dll",
+                        "System.Text.Encoding.dll",
+                        "System.Text.Encoding.Extensions.dll",
+                        "System.Threading.Overlapped.dll",
+                        "System.Threading.Tasks.dll",
+                    })
+                }
+            };
+
+        public override IEnumerable<string> ExpectedFilesAfterPublish =>
+            Enumerable.Concat(base.ExpectedFilesAfterPublish, _additionalFilesAfterPublish[RuntimeIdentifier]);
     }
 }
