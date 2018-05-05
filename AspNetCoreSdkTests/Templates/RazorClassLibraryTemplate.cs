@@ -247,10 +247,10 @@ namespace AspNetCoreSdkTests.Templates
             "System.Xml.XPath.XDocument.dll",
         };
 
-        private IDictionary<RuntimeIdentifier, IEnumerable<string>> _additionalFilesAfterPublish =>
-            new Dictionary<RuntimeIdentifier, IEnumerable<string>>()
+        private IDictionary<RuntimeIdentifier, Func<IEnumerable<string>>> _additionalFilesAfterPublish =>
+            new Dictionary<RuntimeIdentifier, Func<IEnumerable<string>>>()
             {
-                { RuntimeIdentifier.None, Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
+                { RuntimeIdentifier.None, () => Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
                     {
                         Path.Combine("runtimes", "debian.8-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
                         Path.Combine("runtimes", "fedora.23-x64", "native", "System.Security.Cryptography.Native.OpenSsl.so"),
@@ -289,7 +289,7 @@ namespace AspNetCoreSdkTests.Templates
                         Path.Combine("runtimes", "win", "lib", "netstandard2.0", "System.Security.Cryptography.Pkcs.dll"),
                     })
                 },
-                { RuntimeIdentifier.Win_x64, Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
+                { RuntimeIdentifier.Win_x64, () => Enumerable.Concat(_commonAdditionalFilesAfterPublish, new[]
                     {
                         "System.Collections.dll",
                         "System.Console.dll",
@@ -325,6 +325,6 @@ namespace AspNetCoreSdkTests.Templates
             };
 
         public override IEnumerable<string> ExpectedFilesAfterPublish =>
-            Enumerable.Concat(base.ExpectedFilesAfterPublish, _additionalFilesAfterPublish[RuntimeIdentifier]);
+            Enumerable.Concat(base.ExpectedFilesAfterPublish, _additionalFilesAfterPublish[RuntimeIdentifier]());
     }
 }
