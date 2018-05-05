@@ -28,6 +28,8 @@ namespace AspNetCoreSdkTests.Templates
             "appsettings.Development.json",
             "appsettings.json",
             $"{Name}.runtimeconfig.json",
+            // Publish includes all *.config and *.json files (https://github.com/aspnet/websdk/issues/334)
+            "NuGet.config",
             "web.config",
         });
     }
