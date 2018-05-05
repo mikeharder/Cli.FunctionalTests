@@ -62,10 +62,19 @@ namespace AspNetCoreSdkTests.Util
                 workingDirectory, GetEnvironment(workingDirectory));
         }
 
-        internal static (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) Exec(string workingDirectory, string name)
+        internal static (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) Exec(
+            string workingDirectory, string name, RuntimeIdentifier runtimeIdentifier)
         {
-            var path = Path.Combine(PublishOutput, $"{name}.dll");
-            return StartDotNet($"exec {path} {_urls}", workingDirectory, GetEnvironment(workingDirectory));
+            if (runtimeIdentifier == RuntimeIdentifier.None)
+            {
+                var path = Path.Combine(PublishOutput, $"{name}.dll");
+                return StartDotNet($"exec {path} {_urls}", workingDirectory);
+            }
+            else
+            {
+                var path = Path.Combine(workingDirectory, PublishOutput, $"{name}.exe");
+                return StartProcess(path, _urls, workingDirectory);
+            }
         }
 
         private static string RunDotNet(string arguments, string workingDirectory,

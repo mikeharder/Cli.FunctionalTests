@@ -67,14 +67,23 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.EnvironmentVariable, RuntimeIdentifier.Win_x64),
             // Offline restore currently not supported for RazorClassLibrary template (https://github.com/aspnet/Universe/issues/1123)
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+            Template.GetInstance<WebTemplate>(NuGetPackageSource.EnvironmentVariable, RuntimeIdentifier.Win_x64),
         };
 
         public static IEnumerable<Template> BuildData => RestoreData;
 
-        public static IEnumerable<Template> PublishData => RestoreData;
+        public static IEnumerable<Template> PublishData => BuildData;
 
-        public static IEnumerable<Template> RunData = RestoreData.Where(t => t.Type == TemplateType.WebApplication);
+        public static IEnumerable<Template> RunData =
+            BuildData.
+            // Only interested in verifying web applications
+            Where(t => t.Type == TemplateType.WebApplication).
+            // "dotnet run" is only relevant for framework-dependent apps
+            Where(t => t.RuntimeIdentifier == RuntimeIdentifier.None);
 
-        public static IEnumerable<Template> ExecData => RunData;
+        public static IEnumerable<Template> ExecData =
+            PublishData.
+            // Only interested in verifying web applications
+            Where(t => t.Type == TemplateType.WebApplication);
     }
 }

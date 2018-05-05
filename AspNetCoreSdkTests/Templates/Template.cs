@@ -127,7 +127,7 @@ namespace AspNetCoreSdkTests.Templates
             // Exec depends on Publish
             _ = FilesAfterPublish;
 
-            return GetHttpResponses(DotNetUtil.Exec(TempDir, Name));
+            return GetHttpResponses(DotNetUtil.Exec(TempDir, Name, RuntimeIdentifier));
         }
 
         private (HttpResponseMessage Http, HttpResponseMessage Https) GetHttpResponses(
