@@ -41,6 +41,8 @@ namespace AspNetCoreSdkTests.Templates
                 { RuntimeIdentifier.Win_x64, () => Enumerable.Concat(_additionalBinFilesAfterBuild[RuntimeIdentifier.None](), new[] 
                     {
                         $"{Name}.exe",
+                        "hostfxr.dll",
+                        "hostpolicy.dll",
                     }.Select(p => Path.Combine(OutputPath, p)))
                 }
             };
