@@ -21,6 +21,7 @@ namespace AspNetCoreSdkTests
         public void Build(Template template)
         {
             CollectionAssert.AreEquivalent(template.ExpectedObjFilesAfterBuild, template.ObjFilesAfterBuild);
+            CollectionAssert.AreEquivalent(template.ExpectedBinFilesAfterBuild, template.BinFilesAfterBuild);
         }
 
         [Test]
