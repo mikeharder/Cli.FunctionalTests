@@ -62,6 +62,7 @@ namespace AspNetCoreSdkTests.Templates
         private string TempDir => Path.Combine(AssemblySetUp.TempDir, Name, NuGetPackageSource.Name, RuntimeIdentifier.Name );
 
         public abstract string Name { get; }
+        public abstract string OutputPath { get; }
         public abstract TemplateType Type { get; }
         public virtual string RelativeUrl => string.Empty;
 
