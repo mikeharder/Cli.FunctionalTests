@@ -67,7 +67,6 @@ namespace AspNetCoreSdkTests
             // ClassLibrary does not require a package source, even for self-contained deployments
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Win_x64),
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
-            // Offline restore currently not supported for RazorClassLibrary template (https://github.com/aspnet/Universe/issues/1123)
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<RazorTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
@@ -82,6 +81,7 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
             Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
+            Template.GetInstance<RazorTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
         };
 
         public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t));
