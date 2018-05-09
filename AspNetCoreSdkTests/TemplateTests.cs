@@ -62,7 +62,7 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ReactReduxTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
             Template.GetInstance<WebApiTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
 
-            // Self-contained
+            // Self-contained, win-x64
             // ClassLibrary does not require a package source, even for self-contained deployments
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Win_x64),
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
@@ -75,6 +75,9 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ReactTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<ReactReduxTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<WebApiTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+
+            // Self-contained, linux-x64
+            Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Linux_x64),
         };
 
         public static IEnumerable<Template> BuildData => RestoreData;
