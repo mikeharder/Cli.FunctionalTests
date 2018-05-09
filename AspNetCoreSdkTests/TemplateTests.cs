@@ -70,6 +70,7 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<RazorTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+            Template.GetInstance<MvcTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
         };
 
         public static IEnumerable<Template> BuildData => RestoreData;
