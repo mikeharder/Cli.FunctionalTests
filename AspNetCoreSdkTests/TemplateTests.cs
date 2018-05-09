@@ -71,6 +71,9 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<RazorTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<MvcTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+            Template.GetInstance<AngularTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+            Template.GetInstance<ReactTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
+            Template.GetInstance<ReactReduxTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
             Template.GetInstance<WebApiTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Win_x64),
         };
 
