@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 
 namespace AspNetCoreSdkTests
 {
@@ -47,7 +48,7 @@ namespace AspNetCoreSdkTests
             Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterExec.StatusCode);
         }
 
-        public static IEnumerable<Template> RestoreData = new[]
+        private static IEnumerable<Template> _restoreTemplates = new[]
         {
             // Framework-dependent
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
@@ -80,22 +81,31 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Linux_x64),
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
+            Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
         };
 
-        public static IEnumerable<Template> BuildData => RestoreData;
+        public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t));
 
-        public static IEnumerable<Template> PublishData => BuildData;
+        public static IEnumerable<TestCaseData> BuildData => RestoreData;
 
-        public static IEnumerable<Template> RunData =
-            BuildData.
+        public static IEnumerable<TestCaseData> PublishData => BuildData;
+
+        public static IEnumerable<TestCaseData> RunData =
+            from tcd in BuildData
+            let t = (Template)tcd.Arguments[0]
             // Only interested in verifying web applications
-            Where(t => t.Type == TemplateType.WebApplication).
+            where (t.Type == TemplateType.WebApplication)
             // "dotnet run" is only relevant for framework-dependent apps
-            Where(t => t.RuntimeIdentifier == RuntimeIdentifier.None);
+            where (t.RuntimeIdentifier == RuntimeIdentifier.None)
+            select tcd;
 
-        public static IEnumerable<Template> ExecData =
-            PublishData.
+        public static IEnumerable<TestCaseData> ExecData =
+            from tcd in PublishData
+            let t = (Template)tcd.Arguments[0]
             // Only interested in verifying web applications
-            Where(t => t.Type == TemplateType.WebApplication);
+            where (t.Type == TemplateType.WebApplication)
+            // Can only run framework-dependent apps and self-contained apps matching the current platform
+            let runnable = (t.RuntimeIdentifier.OSPlatform == null) || RuntimeInformation.IsOSPlatform(t.RuntimeIdentifier.OSPlatform.Value)
+            select (runnable ? tcd : tcd.Ignore($"RuntimeIdentifier '{t.RuntimeIdentifier}' cannot be executed on this platform"));
     }
 }
