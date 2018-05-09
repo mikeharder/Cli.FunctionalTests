@@ -78,6 +78,7 @@ namespace AspNetCoreSdkTests
 
             // Self-contained, linux-x64
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.Linux_x64),
+            Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.Linux_x64),
         };
 
         public static IEnumerable<Template> BuildData => RestoreData;
