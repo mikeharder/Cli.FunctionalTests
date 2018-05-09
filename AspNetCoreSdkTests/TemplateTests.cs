@@ -110,7 +110,7 @@ namespace AspNetCoreSdkTests
             // Only interested in verifying web applications
             where (t.Type == TemplateType.WebApplication)
             // Can only run framework-dependent apps and self-contained apps matching the current platform
-            let runnable = (t.RuntimeIdentifier.OSPlatform == null) || RuntimeInformation.IsOSPlatform(t.RuntimeIdentifier.OSPlatform.Value)
+            let runnable = t.RuntimeIdentifier.OSPlatforms.Any(p => RuntimeInformation.IsOSPlatform(p))
             select (runnable ? tcd : tcd.Ignore($"RuntimeIdentifier '{t.RuntimeIdentifier}' cannot be executed on this platform"));
     }
 }

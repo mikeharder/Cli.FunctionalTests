@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace AspNetCoreSdkTests
 {
@@ -7,17 +9,17 @@ namespace AspNetCoreSdkTests
     {
         public static RuntimeIdentifier None = new RuntimeIdentifier() {
             Name = "none",
-            OSPlatform = null,
+            OSPlatforms = new[] { OSPlatform.Linux, OSPlatform.OSX, OSPlatform.Windows, },
         };
 
         public static RuntimeIdentifier Win_x64 = new RuntimeIdentifier() {
             Name = "win-x64",
-            OSPlatform = System.Runtime.InteropServices.OSPlatform.Windows,
+            OSPlatforms = new[] { OSPlatform.Windows, },
         };
 
         public static RuntimeIdentifier Linux_x64 = new RuntimeIdentifier() {
             Name = "linux-x64",
-            OSPlatform = System.Runtime.InteropServices.OSPlatform.Linux,
+            OSPlatforms = new[] { OSPlatform.Linux, },
         };
 
         private RuntimeIdentifier() { }
@@ -25,7 +27,7 @@ namespace AspNetCoreSdkTests
         public string Name { get; private set; }
         public string RuntimeArgument => (this == None) ? string.Empty : $"--runtime {Name}";
         public string Path => (this == None) ? string.Empty : Name;
-        public OSPlatform? OSPlatform { get; private set; }
+        public IEnumerable<OSPlatform> OSPlatforms { get; private set; }
 
         public override string ToString() => Name;
     }
