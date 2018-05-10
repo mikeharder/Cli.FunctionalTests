@@ -93,6 +93,7 @@ namespace AspNetCoreSdkTests
             // ClassLibrary does not require a package source, even for self-contained deployments
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.OSX_x64),
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
+            Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
         };
 
         public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t));
