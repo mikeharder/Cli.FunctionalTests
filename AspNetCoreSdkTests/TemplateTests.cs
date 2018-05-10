@@ -37,39 +37,41 @@ namespace AspNetCoreSdkTests
         [TestCaseSource(nameof(RunData))]
         public void Run(Template template)
         {
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterRun.StatusCode,
-                template.HttpResponseAfterRun.StatusCode + Environment.NewLine +
-                template.ServerOutputAfterRun + Environment.NewLine +
-                template.ServerErrorAfterRun);
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterRun.StatusCode,
-                template.HttpsResponseAfterRun.StatusCode + Environment.NewLine +
-                template.ServerOutputAfterRun + Environment.NewLine +
-                template.ServerErrorAfterRun);
+            var statusCode = template.HttpResponseAfterRun.StatusCode;
+            Assert.AreEqual(HttpStatusCode.OK, statusCode,
+                GetMessage(statusCode, template.ServerOutputAfterRun, template.ServerErrorAfterRun));
+
+            statusCode = template.HttpsResponseAfterRun.StatusCode;
+            Assert.AreEqual(HttpStatusCode.OK, statusCode,
+                GetMessage(statusCode, template.ServerOutputAfterRun, template.ServerErrorAfterRun));
         }
 
         [Test]
         [TestCaseSource(nameof(ExecData))]
         public void Exec(Template template)
         {
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterExec.StatusCode,
-                template.HttpResponseAfterExec.StatusCode + Environment.NewLine +
-                template.ServerOutputAfterExec + Environment.NewLine +
-                template.ServerErrorAfterExec);
+            var statusCode = template.HttpResponseAfterExec.StatusCode;
+            Assert.AreEqual(HttpStatusCode.OK, statusCode,
+                GetMessage(statusCode, template.ServerOutputAfterExec, template.ServerErrorAfterExec));
 
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterExec.StatusCode,
-                template.HttpsResponseAfterExec.StatusCode + Environment.NewLine +
-                template.ServerOutputAfterExec + Environment.NewLine +
-                template.ServerErrorAfterExec);
+            statusCode = template.HttpsResponseAfterExec.StatusCode;
+            Assert.AreEqual(HttpStatusCode.OK, statusCode,
+                GetMessage(statusCode, template.ServerOutputAfterExec, template.ServerErrorAfterExec));
         }
 
-        //private static string GetHttpErrorMessage(HttpStatusCode statusCode, string serverOutput, string serverError)
-        //{
-        //    return String.Join
-
-        //    return $"StatusCode: {statusCode}" + Environment.NewLine +
-        //        "ServerOutput" + Environment.NewLine +
-        //        "------------" + Environment.NewLine +
-        //}
+        private static string GetMessage(HttpStatusCode statusCode, string serverOutput, string serverError)
+        {
+            return String.Join(Environment.NewLine,
+                $"StatusCode: {statusCode}",
+                string.Empty,
+                "ServerOutput",
+                "------------",
+                serverOutput,
+                string.Empty,
+                "ServerError",
+                "------------",
+                serverError);
+        }
 
         private static IEnumerable<Template> _restoreTemplates = new[]
         {
