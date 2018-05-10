@@ -42,7 +42,7 @@ namespace AspNetCoreSdkTests
                 template.ServerOutputAfterRun + Environment.NewLine +
                 template.ServerErrorAfterRun);
             Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterRun.StatusCode,
-                template.HttpResponseAfterRun.StatusCode + Environment.NewLine +
+                template.HttpsResponseAfterRun.StatusCode + Environment.NewLine +
                 template.ServerOutputAfterRun + Environment.NewLine +
                 template.ServerErrorAfterRun);
         }
@@ -57,10 +57,19 @@ namespace AspNetCoreSdkTests
                 template.ServerErrorAfterExec);
 
             Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterExec.StatusCode,
-                template.HttpResponseAfterExec.StatusCode + Environment.NewLine +
+                template.HttpsResponseAfterExec.StatusCode + Environment.NewLine +
                 template.ServerOutputAfterExec + Environment.NewLine +
                 template.ServerErrorAfterExec);
         }
+
+        //private static string GetHttpErrorMessage(HttpStatusCode statusCode, string serverOutput, string serverError)
+        //{
+        //    return String.Join
+
+        //    return $"StatusCode: {statusCode}" + Environment.NewLine +
+        //        "ServerOutput" + Environment.NewLine +
+        //        "------------" + Environment.NewLine +
+        //}
 
         private static IEnumerable<Template> _restoreTemplates = new[]
         {

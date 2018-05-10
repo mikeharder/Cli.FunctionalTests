@@ -141,6 +141,7 @@ namespace AspNetCoreSdkTests.Templates
             try
             {
                 var (httpUrl, httpsUrl) = ScrapeUrls(process);
+                Thread.Sleep(10000);
                 return (
                     Get(new Uri(new Uri(httpUrl), RelativeUrl)),
                     Get(new Uri(new Uri(httpsUrl), RelativeUrl)),
