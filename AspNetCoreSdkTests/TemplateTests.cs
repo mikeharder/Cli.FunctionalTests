@@ -94,6 +94,7 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.OSX_x64),
             Template.GetInstance<ConsoleApplicationTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
             Template.GetInstance<RazorClassLibraryTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
+            Template.GetInstance<WebTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
         };
 
         public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t));
