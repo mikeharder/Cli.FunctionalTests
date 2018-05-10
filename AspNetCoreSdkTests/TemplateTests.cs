@@ -1,5 +1,6 @@
 ﻿using AspNetCoreSdkTests.Templates;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -36,16 +37,29 @@ namespace AspNetCoreSdkTests
         [TestCaseSource(nameof(RunData))]
         public void Run(Template template)
         {
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterRun.StatusCode);
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterRun.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterRun.StatusCode,
+                template.HttpResponseAfterRun.StatusCode + Environment.NewLine +
+                template.ServerOutputAfterRun + Environment.NewLine +
+                template.ServerErrorAfterRun);
+            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterRun.StatusCode,
+                template.HttpResponseAfterRun.StatusCode + Environment.NewLine +
+                template.ServerOutputAfterRun + Environment.NewLine +
+                template.ServerErrorAfterRun);
         }
 
         [Test]
         [TestCaseSource(nameof(ExecData))]
         public void Exec(Template template)
         {
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterExec.StatusCode);
-            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterExec.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, template.HttpResponseAfterExec.StatusCode,
+                template.HttpResponseAfterExec.StatusCode + Environment.NewLine +
+                template.ServerOutputAfterExec + Environment.NewLine +
+                template.ServerErrorAfterExec);
+
+            Assert.AreEqual(HttpStatusCode.OK, template.HttpsResponseAfterExec.StatusCode,
+                template.HttpResponseAfterExec.StatusCode + Environment.NewLine +
+                template.ServerOutputAfterExec + Environment.NewLine +
+                template.ServerErrorAfterExec);
         }
 
         private static IEnumerable<Template> _restoreTemplates = new[]
