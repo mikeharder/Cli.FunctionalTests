@@ -69,7 +69,7 @@ namespace AspNetCoreSdkTests.Templates
         public IEnumerable<string> ObjFilesAfterRestore => _objFilesAfterRestore.Value;
         public IEnumerable<string> ObjFilesAfterBuild => _filesAfterBuild.Value.ObjFiles;
         public IEnumerable<string> BinFilesAfterBuild => _filesAfterBuild.Value.BinFiles;
-        public IEnumerable<string> FilesAfterPublish => _filesAfterPublish.Value;
+        public virtual IEnumerable<string> FilesAfterPublish => _filesAfterPublish.Value;
         public HttpResponseMessage HttpResponseAfterRun => _httpResponsesAfterRun.Value.Http;
         public HttpResponseMessage HttpsResponseAfterRun => _httpResponsesAfterRun.Value.Https;
         public string ServerOutputAfterRun => _httpResponsesAfterRun.Value.ServerOutput;
