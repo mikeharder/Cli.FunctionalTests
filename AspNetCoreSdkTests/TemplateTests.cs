@@ -46,6 +46,14 @@ namespace AspNetCoreSdkTests
                 GetMessage(statusCode, template.ServerOutputAfterRun, template.ServerErrorAfterRun));
         }
 
+        [NonParallelizable]
+        [Test]
+        [TestCaseSource(nameof(RunNonParallelizableData))]
+        public void RunNonParallelizable(Template template)
+        {
+            Run(template);
+        }
+
         [Test]
         [TestCaseSource(nameof(ExecData))]
         public void Exec(Template template)
@@ -73,7 +81,7 @@ namespace AspNetCoreSdkTests
                 serverError);
         }
 
-        private static IEnumerable<Template> _restoreTemplates = new[]
+        private static readonly IEnumerable<Template> _restoreTemplates = new[]
         {
             // Framework-dependent
             Template.GetInstance<ClassLibraryTemplate>(NuGetPackageSource.None, RuntimeIdentifier.None),
@@ -128,13 +136,13 @@ namespace AspNetCoreSdkTests
             Template.GetInstance<WebApiTemplate>(NuGetPackageSource.NuGetOrg, RuntimeIdentifier.OSX_x64),
         };
 
-        public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t));
+        public static IEnumerable<TestCaseData> RestoreData = _restoreTemplates.Select(t => new TestCaseData(t)).ToList();
 
         public static IEnumerable<TestCaseData> BuildData => RestoreData;
 
         public static IEnumerable<TestCaseData> PublishData => BuildData;
 
-        public static IEnumerable<TestCaseData> RunData =
+        private static readonly IEnumerable<TestCaseData> _runData =
             from tcd in BuildData
             let t = (Template)tcd.Arguments[0]
             // Only interested in verifying web applications
@@ -142,6 +150,18 @@ namespace AspNetCoreSdkTests
             // "dotnet run" is only relevant for framework-dependent apps
             where (t.RuntimeIdentifier == RuntimeIdentifier.None)
             select tcd;
+
+        // On Linux, calling "dotnet run" on multiple React templates in parallel may fail since the default
+        // fs.inotify.max_user_watches is too low.  One workaround is to increase fs.inotify.max_user_watches,
+        // but this means tests will fail on a default machine.  A simpler workaround is to disable parallel
+        // execution for these tests.
+        public static IEnumerable<TestCaseData> RunNonParallelizableData =
+            from tcd in _runData
+            let t = (Template)tcd.Arguments[0]
+            where (t is ReactTemplate)
+            select tcd;
+
+        public static IEnumerable<TestCaseData> RunData = _runData.Except(RunNonParallelizableData);
 
         public static IEnumerable<TestCaseData> ExecData =
             from tcd in PublishData
