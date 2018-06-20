@@ -110,7 +110,7 @@ namespace AspNetCoreSdkTests
             else
             {
                 // Pre-release SDKs require a private nuget feed
-                var packageSource = (DotNetUtil.SdkVersion == new Version(2, 1, 302)) ? NuGetPackageSource.NuGetOrg : NuGetPackageSource.EnvironmentVariable;
+                var packageSource = (DotNetUtil.SdkVersion == new Version(2, 1, 302)) ? NuGetPackageSource.EnvironmentVariableAndNuGetOrg : NuGetPackageSource.NuGetOrg;
 
                 // Self-contained
                 return new[]
