@@ -28,6 +28,8 @@ namespace AspNetCoreSdkTests.Util
 
         public static Version SdkVersion => _sdkVersion.Value;
 
+        public static string TargetFrameworkMoniker => $"netcoreapp{SdkVersion.Major}.{SdkVersion.Minor}";
+
         private static Version GetSdkVersion()
         {
             var info = RunDotNet("--info", workingDirectory: null);
