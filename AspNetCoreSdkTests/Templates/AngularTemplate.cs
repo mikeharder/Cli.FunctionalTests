@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AspNetCoreSdkTests.Util;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace AspNetCoreSdkTests.Templates
         public override IEnumerable<string> FilesAfterPublish =>
             base.FilesAfterPublish.Select(f => Regex.Replace(f, @"\.[0-9a-f]{20}\.", ".[HASH]."));
 
-        public override IEnumerable<string> ExpectedFilesAfterPublish => 
+        public override IEnumerable<string> ExpectedFilesAfterPublish =>
             base.ExpectedFilesAfterPublish
             .Concat(new[]
             {
@@ -27,10 +28,22 @@ namespace AspNetCoreSdkTests.Templates
                 Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].eot"),
                 Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff"),
                 Path.Combine("ClientApp", "dist", "index.html"),
-                Path.Combine("ClientApp", "dist", "inline.[HASH].bundle.js"),
-                Path.Combine("ClientApp", "dist", "main.[HASH].bundle.js"),
-                Path.Combine("ClientApp", "dist", "polyfills.[HASH].bundle.js"),
-                Path.Combine("ClientApp", "dist", "styles.[HASH].bundle.css"),
-            });
+            })
+            .Concat(DotNetUtil.TargetFrameworkMoniker == "netcoreapp2.1" ?
+                new[]
+                {
+                    Path.Combine("ClientApp", "dist", $"inline.[HASH].bundle.js"),
+                    Path.Combine("ClientApp", "dist", $"main.[HASH].bundle.js"),
+                    Path.Combine("ClientApp", "dist", $"polyfills.[HASH].bundle.js"),
+                    Path.Combine("ClientApp", "dist", $"styles.[HASH].bundle.css"),
+                }
+                :
+                new[]
+                {
+                    Path.Combine("ClientApp", "dist", $"runtime.[HASH].js"),
+                    Path.Combine("ClientApp", "dist", $"main.[HASH].js"),
+                    Path.Combine("ClientApp", "dist", $"polyfills.[HASH].js"),
+                    Path.Combine("ClientApp", "dist", $"styles.[HASH].css"),
+                });
     }
 }
