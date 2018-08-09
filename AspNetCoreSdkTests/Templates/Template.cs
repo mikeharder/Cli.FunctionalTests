@@ -92,10 +92,14 @@ namespace AspNetCoreSdkTests.Templates
 
         public abstract IEnumerable<string> ExpectedFilesAfterPublish { get; }
 
+        // Hook for subclasses to modify template immediately after "dotnet new"
+        protected virtual void AfterNew(string tempDir) { }
+        
         private IEnumerable<string> GetObjFilesAfterRestore()
         {
             Directory.CreateDirectory(TempDir);
             DotNetUtil.New(Name, TempDir);
+            AfterNew(TempDir);
             DotNetUtil.Restore(TempDir, NuGetPackageSource, RuntimeIdentifier);
             return IOUtil.GetFiles(Path.Combine(TempDir, "obj"));
         }
