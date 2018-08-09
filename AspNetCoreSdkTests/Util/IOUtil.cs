@@ -8,6 +8,11 @@ namespace AspNetCoreSdkTests.Util
 {
     internal static class IOUtil
     {
+        public static void ReplaceInFile(string path, string oldValue, string newValue)
+        {
+            File.WriteAllText(path, File.ReadAllText(path).Replace(oldValue, newValue));
+        }
+
         public static IEnumerable<string> GetFiles(string path)
         {
             return Directory.GetFiles(path, "*", SearchOption.AllDirectories)
