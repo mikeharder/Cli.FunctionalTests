@@ -91,10 +91,7 @@ namespace AspNetCoreSdkTests.Util
 
         public static string Publish(string workingDirectory, RuntimeIdentifier runtimeIdentifier)
         {
-            // "dotnet publish --no-build" is broken in SDK 2.2.100-preview1-009345
-            var noBuild = (DotNetUtil.SdkVersion == new Version(2, 2, 100)) ? string.Empty : "--no-build";
-
-            return RunDotNet($"publish {noBuild} -o {PublishOutput} {runtimeIdentifier.RuntimeArgument}", workingDirectory);
+            return RunDotNet($"publish --no-build -o {PublishOutput} {runtimeIdentifier.RuntimeArgument}", workingDirectory);
         }
 
         internal static (Process Process, ConcurrentStringBuilder OutputBuilder, ConcurrentStringBuilder ErrorBuilder) Exec(
