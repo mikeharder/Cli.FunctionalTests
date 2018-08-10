@@ -17,14 +17,6 @@ namespace AspNetCoreSdkTests.Templates
 
         public override TemplateType Type => TemplateType.ConsoleApplication;
 
-        protected override void AfterNew(string tempDir)
-        {
-            // Temporary workaround required until template updated to netcoreapp2.2 (https://github.com/dotnet/cli/pull/9793)
-            IOUtil.ReplaceInFile(Path.Combine(tempDir, $"{Name}.csproj"), "netcoreapp2.1", "netcoreapp2.2");
-
-            base.AfterNew(tempDir);
-        }
-
         private IDictionary<RuntimeIdentifier, Func<IEnumerable<string>>> _additionalObjFilesAfterBuild =>
             new Dictionary<RuntimeIdentifier, Func<IEnumerable<string>>>()
             {
