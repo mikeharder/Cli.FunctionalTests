@@ -92,7 +92,8 @@ namespace AspNetCoreSdkTests.Templates
 
         public abstract IEnumerable<string> ExpectedFilesAfterPublish { get; }
 
-        // Hook for subclasses to modify template immediately after "dotnet new"
+        // Hook for subclasses to modify template immediately after "dotnet new".  Typically used
+        // for temporary workarounds (e.g. changing TFM).
         protected virtual void AfterNew(string tempDir) { }
         
         private IEnumerable<string> GetObjFilesAfterRestore()
