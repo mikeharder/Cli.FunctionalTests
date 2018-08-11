@@ -16,6 +16,20 @@ namespace AspNetCoreSdkTests.Templates
         public override IEnumerable<string> FilesAfterPublish =>
             base.FilesAfterPublish.Select(f => Regex.Replace(f, @"\.[0-9a-f]{20}\.", ".[HASH]."));
 
+        protected override void AfterNew(string tempDir)
+        {
+            // Workaround until https://github.com/aspnet/Templating/pull/672 is merged
+            const string before =
+@"<DistFiles Include=""$(SpaRoot)dist\**; $(SpaRoot)dist-server\**; $(SpaRoot)package.json"" />";
+
+            const string after =
+@"<DistFiles Include=""$(SpaRoot)dist\**; $(SpaRoot)dist-server\**"" />";
+
+            IOUtil.ReplaceInFile(Path.Combine(tempDir, $"{Name}.csproj"), before, after);
+
+            base.AfterNew(tempDir);
+        }
+
         public override IEnumerable<string> ExpectedFilesAfterPublish =>
             base.ExpectedFilesAfterPublish
             .Concat(new[]
