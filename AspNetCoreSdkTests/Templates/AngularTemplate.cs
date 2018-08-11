@@ -36,16 +36,16 @@ namespace AspNetCoreSdkTests.Templates
             {
                 Path.Combine("wwwroot", "favicon.ico"),
                 Path.Combine("ClientApp", "dist", "3rdpartylicenses.txt"),
-                Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff2"),
-                Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].svg"),
-                Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].ttf"),
-                Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].eot"),
-                Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff"),
                 Path.Combine("ClientApp", "dist", "index.html"),
             })
             .Concat(DotNetUtil.TargetFrameworkMoniker == "netcoreapp2.1" ?
                 new[]
                 {
+                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff2"),
+                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].svg"),
+                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].ttf"),
+                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].eot"),
+                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff"),
                     Path.Combine("ClientApp", "dist", $"inline.[HASH].bundle.js"),
                     Path.Combine("ClientApp", "dist", $"main.[HASH].bundle.js"),
                     Path.Combine("ClientApp", "dist", $"polyfills.[HASH].bundle.js"),
