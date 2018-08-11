@@ -119,6 +119,14 @@ namespace AspNetCoreSdkTests.Templates
             // Publish depends on Build
             _ = BinFilesAfterBuild;
 
+            // Workaround "EmbedAppNameInHost fails when calling build twice"
+            // https://github.com/dotnet/sdk/issues/2466
+            if (RuntimeIdentifier != RuntimeIdentifier.None)
+            {
+                File.Delete(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
+                    RuntimeIdentifier.Name, "host", Name + RuntimeIdentifier.ExecutableFileExtension));
+            }
+
             DotNetUtil.Publish(TempDir, RuntimeIdentifier);
             return IOUtil.GetFiles(Path.Combine(TempDir, DotNetUtil.PublishOutput));
         }
