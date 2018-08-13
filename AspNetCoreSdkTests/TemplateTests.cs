@@ -1,5 +1,6 @@
 ﻿using AspNetCoreSdkTests.Templates;
 using AspNetCoreSdkTests.Util;
+using NuGet.Versioning;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -111,11 +112,11 @@ namespace AspNetCoreSdkTests
         private static IEnumerable<Template> GetTemplates(RuntimeIdentifier runtimeIdentifier)
         {
             // Offline restore is broken in SDK 2.1.301 (https://github.com/aspnet/Universe/issues/1220)
-            var offlinePackageSource = (DotNetUtil.SdkVersion == new Version(2, 1, 301)) ?
+            var offlinePackageSource = (DotNetUtil.SdkVersion == new SemanticVersion(2, 1, 301)) ?
                 NuGetPackageSource.NuGetOrg : NuGetPackageSource.None;
 
             // Pre-release SDKs require a private nuget feed
-            var onlinePackageSource = (DotNetUtil.SdkVersion == new Version(2, 2, 100)) ?
+            var onlinePackageSource = (DotNetUtil.SdkVersion.IsPrerelease) ?
                 NuGetPackageSource.EnvironmentVariableAndNuGetOrg : NuGetPackageSource.NuGetOrg;
 
             if (runtimeIdentifier == RuntimeIdentifier.None)
