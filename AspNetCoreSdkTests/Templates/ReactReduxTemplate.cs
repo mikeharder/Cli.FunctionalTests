@@ -13,10 +13,10 @@ namespace AspNetCoreSdkTests.Templates
         {
             // Workaround until https://github.com/aspnet/Templating/pull/672 is merged
             const string before =
-@"<DistFiles Include=""$(SpaRoot)dist\**; $(SpaRoot)dist-server\**; $(SpaRoot)package.json"" />";
+@"<DistFiles Include=""$(SpaRoot)build\**; $(SpaRoot)build-ssr\**; $(SpaRoot)package.json"" />";
 
             const string after =
-@"<DistFiles Include=""$(SpaRoot)dist\**; $(SpaRoot)dist-server\**"" />";
+@"<DistFiles Include=""$(SpaRoot)build\**; $(SpaRoot)build-ssr\**"" />";
 
             IOUtil.ReplaceInFile(Path.Combine(tempDir, $"{Name}.csproj"), before, after);
 
