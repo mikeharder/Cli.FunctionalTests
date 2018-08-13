@@ -14,7 +14,7 @@ namespace AspNetCoreSdkTests.Templates
 
         protected override string RazorPath => "Pages";
 
-        private IDictionary<string, Func<IEnumerable<string>>> _additionalFilesAfterPublish =>
+        private IDictionary<string, Func<IEnumerable<string>>> _additionalObjFilesAfterBuild =>
             new Dictionary<string, Func<IEnumerable<string>>>()
             {
                 { "common", () => new[]
@@ -29,18 +29,18 @@ namespace AspNetCoreSdkTests.Templates
                     }
                 }
                 { "netcoreapp2.1", () =>
-                    _additionalFilesAfterPublish["common"]()
+                    _additionalObjFilesAfterBuild["common"]()
                     .Concat(new[]
                     {
                         Path.Combine("Razor", RazorPath, "About.g.cshtml.cs"),
                         Path.Combine("Razor", RazorPath, "Contact.g.cshtml.cs"),
                     })
                 },
-                { "netcoreapp2.2", () => _additionalFilesAfterPublish["common"]() },
+                { "netcoreapp2.2", () => _additionalObjFilesAfterBuild["common"]() },
             };
 
         public override IEnumerable<string> ExpectedObjFilesAfterBuild =>
             base.ExpectedObjFilesAfterBuild
-            .Concat(_additionalFilesAfterPublish[DotNetUtil.TargetFrameworkMoniker]().Select(p => Path.Combine(OutputPath, p)));
+            .Concat(_additionalObjFilesAfterBuild[DotNetUtil.TargetFrameworkMoniker]().Select(p => Path.Combine(OutputPath, p)));
     }
 }
