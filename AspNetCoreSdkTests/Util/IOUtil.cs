@@ -33,6 +33,14 @@ namespace AspNetCoreSdkTests.Util
             return temp;
         }
 
+        public static void DeleteFileIfExists(string path)
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+
         public static void DeleteDir(string path)
         {
             // If delete fails (e.g. due to a file in use), retry once every second up to 20 times.

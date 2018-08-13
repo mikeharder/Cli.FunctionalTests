@@ -123,7 +123,7 @@ namespace AspNetCoreSdkTests.Templates
             // https://github.com/dotnet/sdk/issues/2466
             if (RuntimeIdentifier != RuntimeIdentifier.None)
             {
-                File.Delete(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
+                IOUtil.DeleteFileIfExists(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
                     RuntimeIdentifier.Name, "host", Name + RuntimeIdentifier.ExecutableFileExtension));
             }
 
