@@ -22,7 +22,8 @@ namespace AspNetCoreSdkTests.Util
         // Bind to dynamic port 0 to avoid port conflicts during parallel tests
         private const string _urls = "--urls http://127.0.0.1:0;https://127.0.0.1:0";
 
-        public static string PublishOutput => "pub";
+        // Must publish to folder under "bin" or "obj" to prevent double-copying publish output during incremental publish
+        public static string PublishOutput => Path.Combine("bin", "pub");
 
         private static readonly Lazy<Version> _sdkVersion = new Lazy<Version>(GetSdkVersion, LazyThreadSafetyMode.PublicationOnly);
 

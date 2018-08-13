@@ -30,8 +30,11 @@ namespace AspNetCoreSdkTests.Templates
         }
 
         private Lazy<IEnumerable<string>> _objFilesAfterRestore;
+        private Lazy<IEnumerable<string>> _objFilesAfterRestoreIncremental;
         private Lazy<(IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles)> _filesAfterBuild;
+        private Lazy<(IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles)> _filesAfterBuildIncremental;
         private Lazy<IEnumerable<string>> _filesAfterPublish;
+        private Lazy<IEnumerable<string>> _filesAfterPublishIncremental;
         private Lazy<(HttpResponseMessage Http, HttpResponseMessage Https, string ServerOutput, string ServerError )> _httpResponsesAfterRun;
         private Lazy<(HttpResponseMessage Http, HttpResponseMessage Https, string ServerOutput, string ServerError)> _httpResponsesAfterExec;
 
@@ -43,11 +46,20 @@ namespace AspNetCoreSdkTests.Templates
             _objFilesAfterRestore = new Lazy<IEnumerable<string>>(
                 GetObjFilesAfterRestore, LazyThreadSafetyMode.ExecutionAndPublication);
 
+            _objFilesAfterRestoreIncremental = new Lazy<IEnumerable<string>>(
+                GetObjFilesAfterRestoreIncremental, LazyThreadSafetyMode.ExecutionAndPublication);
+
             _filesAfterBuild = new Lazy<(IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles)>(
                 GetFilesAfterBuild, LazyThreadSafetyMode.ExecutionAndPublication);
 
+            _filesAfterBuildIncremental = new Lazy<(IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles)>(
+                GetFilesAfterBuildIncremental, LazyThreadSafetyMode.ExecutionAndPublication);
+
             _filesAfterPublish = new Lazy<IEnumerable<string>>(
                 GetFilesAfterPublish, LazyThreadSafetyMode.ExecutionAndPublication);
+
+            _filesAfterPublishIncremental = new Lazy<IEnumerable<string>>(
+                GetFilesAfterPublishIncremental, LazyThreadSafetyMode.ExecutionAndPublication);
 
             _httpResponsesAfterRun = new Lazy<(HttpResponseMessage Http, HttpResponseMessage Https, string ServerOutput, string ServerError)>(
                 GetHttpResponsesAfterRun, LazyThreadSafetyMode.ExecutionAndPublication);
@@ -66,9 +78,13 @@ namespace AspNetCoreSdkTests.Templates
         public virtual string RelativeUrl => string.Empty;
 
         public IEnumerable<string> ObjFilesAfterRestore => _objFilesAfterRestore.Value;
+        public IEnumerable<string> ObjFilesAfterRestoreIncremental => _objFilesAfterRestoreIncremental.Value;
         public IEnumerable<string> ObjFilesAfterBuild => _filesAfterBuild.Value.ObjFiles;
         public IEnumerable<string> BinFilesAfterBuild => _filesAfterBuild.Value.BinFiles;
+        public IEnumerable<string> ObjFilesAfterBuildIncremental => _filesAfterBuildIncremental.Value.ObjFiles;
+        public IEnumerable<string> BinFilesAfterBuildIncremental => _filesAfterBuildIncremental.Value.BinFiles;
         public virtual IEnumerable<string> FilesAfterPublish => _filesAfterPublish.Value;
+        public virtual IEnumerable<string> FilesAfterPublishIncremental => _filesAfterPublishIncremental.Value;
         public HttpResponseMessage HttpResponseAfterRun => _httpResponsesAfterRun.Value.Http;
         public HttpResponseMessage HttpsResponseAfterRun => _httpResponsesAfterRun.Value.Https;
         public string ServerOutputAfterRun => _httpResponsesAfterRun.Value.ServerOutput;
@@ -105,10 +121,28 @@ namespace AspNetCoreSdkTests.Templates
             return IOUtil.GetFiles(Path.Combine(TempDir, "obj"));
         }
 
+        private IEnumerable<string> GetObjFilesAfterRestoreIncremental()
+        {
+            // RestoreIncremental depends on Restore
+            _ = ObjFilesAfterRestore;
+
+            DotNetUtil.Restore(TempDir, NuGetPackageSource, RuntimeIdentifier);
+            return IOUtil.GetFiles(Path.Combine(TempDir, "obj"));
+        }
+
         private (IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles) GetFilesAfterBuild()
         {
-            // Build depends on Restore
-            _ = ObjFilesAfterRestore;
+            // Build depends on RestoreIncremental
+            _ = ObjFilesAfterRestoreIncremental;
+
+            DotNetUtil.Build(TempDir, NuGetPackageSource, RuntimeIdentifier);
+            return (IOUtil.GetFiles(Path.Combine(TempDir, "obj")), IOUtil.GetFiles(Path.Combine(TempDir, "bin")));
+        }
+
+        private (IEnumerable<string> ObjFiles, IEnumerable<string> BinFiles) GetFilesAfterBuildIncremental()
+        {
+            // BuildIncremental depends on Build
+            _ = ObjFilesAfterBuild;
 
             DotNetUtil.Build(TempDir, NuGetPackageSource, RuntimeIdentifier);
             return (IOUtil.GetFiles(Path.Combine(TempDir, "obj")), IOUtil.GetFiles(Path.Combine(TempDir, "bin")));
@@ -116,8 +150,25 @@ namespace AspNetCoreSdkTests.Templates
 
         private IEnumerable<string> GetFilesAfterPublish()
         {
-            // Publish depends on Build
-            _ = BinFilesAfterBuild;
+            // Publish depends on BuildIncremental
+            _ = BinFilesAfterBuildIncremental;
+
+            // Workaround "EmbedAppNameInHost fails when calling build twice"
+            // https://github.com/dotnet/sdk/issues/2466
+            if (RuntimeIdentifier != RuntimeIdentifier.None)
+            {
+                IOUtil.DeleteFileIfExists(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
+                    RuntimeIdentifier.Name, "host", Name + RuntimeIdentifier.ExecutableFileExtension));
+            }
+
+            DotNetUtil.Publish(TempDir, RuntimeIdentifier);
+            return IOUtil.GetFiles(Path.Combine(TempDir, DotNetUtil.PublishOutput));
+        }
+
+        private IEnumerable<string> GetFilesAfterPublishIncremental()
+        {
+            // PublishIncremental depends on Publish
+            _ = FilesAfterPublish;
 
             // Workaround "EmbedAppNameInHost fails when calling build twice"
             // https://github.com/dotnet/sdk/issues/2466
@@ -133,16 +184,16 @@ namespace AspNetCoreSdkTests.Templates
 
         private (HttpResponseMessage Http, HttpResponseMessage Https, string ServerOutput, string ServerError) GetHttpResponsesAfterRun()
         {
-            // Run depends on Build
-            _ = BinFilesAfterBuild;
+            // Run depends on BuildIncremental
+            _ = BinFilesAfterBuildIncremental;
 
             return GetHttpResponses(DotNetUtil.Run(TempDir, RuntimeIdentifier));
         }
 
         private (HttpResponseMessage Http, HttpResponseMessage Https, string ServerOutput, string ServerError) GetHttpResponsesAfterExec()
         {
-            // Exec depends on Publish
-            _ = FilesAfterPublish;
+            // Exec depends on PublishIncremental
+            _ = FilesAfterPublishIncremental;
 
             return GetHttpResponses(DotNetUtil.Exec(TempDir, Name, RuntimeIdentifier));
         }

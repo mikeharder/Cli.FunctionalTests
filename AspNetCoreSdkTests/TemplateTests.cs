@@ -20,6 +20,13 @@ namespace AspNetCoreSdkTests
         }
 
         [Test]
+        [TestCaseSource(nameof(RestoreData))]
+        public void RestoreIncremental(Template template)
+        {
+            CollectionAssert.AreEquivalent(template.ExpectedObjFilesAfterRestore, template.ObjFilesAfterRestoreIncremental);
+        }
+
+        [Test]
         [TestCaseSource(nameof(BuildData))]
         public void Build(Template template)
         {
@@ -28,11 +35,28 @@ namespace AspNetCoreSdkTests
         }
 
         [Test]
+        [TestCaseSource(nameof(BuildData))]
+        public void BuildIncremental(Template template)
+        {
+            CollectionAssert.AreEquivalent(template.ExpectedObjFilesAfterBuild, template.ObjFilesAfterBuildIncremental);
+            CollectionAssert.AreEquivalent(template.ExpectedBinFilesAfterBuild, template.BinFilesAfterBuildIncremental);
+        }
+
+        [Test]
         [TestCaseSource(nameof(PublishData))]
         public void Publish(Template template)
         {
             var expected = template.ExpectedFilesAfterPublish;
             var actual = template.FilesAfterPublish;
+            CollectionAssert.AreEquivalent(expected, actual);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(PublishData))]
+        public void PublishIncremental(Template template)
+        {
+            var expected = template.ExpectedFilesAfterPublish;
+            var actual = template.FilesAfterPublishIncremental;
             CollectionAssert.AreEquivalent(expected, actual);
         }
 
