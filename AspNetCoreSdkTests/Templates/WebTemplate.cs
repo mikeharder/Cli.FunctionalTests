@@ -236,7 +236,6 @@ namespace AspNetCoreSdkTests.Templates
                     .Concat(new[]
                     {
                         "aspnetcorev2_inprocess.dll",
-                        "aspnetcorev2_inprocess.pdb",
                         "sni.dll",
                     })
                 },
