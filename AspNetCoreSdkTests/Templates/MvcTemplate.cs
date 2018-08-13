@@ -14,11 +14,11 @@ namespace AspNetCoreSdkTests.Templates
 
         protected override string RazorPath => "Views";
 
-        private IDictionary<string, Func<IEnumerable<string>>> _additionalFilesAfterPublish =>
+        private IDictionary<string, Func<IEnumerable<string>>> _additionalObjFilesAfterBuild =>
             new Dictionary<string, Func<IEnumerable<string>>>()
             {
                 { "netcoreapp2.1", () =>
-                    _additionalFilesAfterPublish["netcoreapp2.2"]()
+                    _additionalObjFilesAfterBuild["netcoreapp2.2"]()
                     .Concat(new[]
                     {
                         Path.Combine("Razor", RazorPath, "Home", "About.g.cshtml.cs"),
@@ -40,6 +40,6 @@ namespace AspNetCoreSdkTests.Templates
 
         public override IEnumerable<string> ExpectedObjFilesAfterBuild =>
             base.ExpectedObjFilesAfterBuild
-            .Concat(_additionalFilesAfterPublish[DotNetUtil.TargetFrameworkMoniker]().Select(p => Path.Combine(OutputPath, p)));
+            .Concat(_additionalObjFilesAfterBuild[DotNetUtil.TargetFrameworkMoniker]().Select(p => Path.Combine(OutputPath, p)));
     }
 }
