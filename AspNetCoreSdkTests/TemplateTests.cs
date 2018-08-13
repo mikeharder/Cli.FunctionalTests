@@ -31,7 +31,9 @@ namespace AspNetCoreSdkTests
         [TestCaseSource(nameof(PublishData))]
         public void Publish(Template template)
         {
-            CollectionAssert.AreEquivalent(template.ExpectedFilesAfterPublish, template.FilesAfterPublish);
+            var expected = template.ExpectedFilesAfterPublish;
+            var actual = template.FilesAfterPublish;
+            CollectionAssert.AreEquivalent(expected, actual);
         }
 
         [Test]
