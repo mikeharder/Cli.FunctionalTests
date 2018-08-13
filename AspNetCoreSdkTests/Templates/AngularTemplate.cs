@@ -1,4 +1,5 @@
 ﻿using AspNetCoreSdkTests.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,34 +31,45 @@ namespace AspNetCoreSdkTests.Templates
             base.AfterNew(tempDir);
         }
 
+        private IDictionary<string, Func<IEnumerable<string>>> _additionalFilesAfterPublish =>
+            new Dictionary<string, Func<IEnumerable<string>>>()
+            {
+                { "common", () => new[]
+                    {
+                        Path.Combine("wwwroot", "favicon.ico"),
+                        Path.Combine("ClientApp", "dist", "3rdpartylicenses.txt"),
+                        Path.Combine("ClientApp", "dist", "index.html"),
+                    }
+                },
+                { "netcoreapp2.1", () =>
+                    _additionalFilesAfterPublish["common"]()
+                    .Concat(new[]
+                    {
+                        Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff2"),
+                        Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].svg"),
+                        Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].ttf"),
+                        Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].eot"),
+                        Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff"),
+                        Path.Combine("ClientApp", "dist", $"inline.[HASH].bundle.js"),
+                        Path.Combine("ClientApp", "dist", $"main.[HASH].bundle.js"),
+                        Path.Combine("ClientApp", "dist", $"polyfills.[HASH].bundle.js"),
+                        Path.Combine("ClientApp", "dist", $"styles.[HASH].bundle.css"),
+                    })
+                },
+                { "netcoreapp2.2", () =>
+                    _additionalFilesAfterPublish["common"]()
+                    .Concat(new[]
+                    {
+                        Path.Combine("ClientApp", "dist", $"runtime.[HASH].js"),
+                        Path.Combine("ClientApp", "dist", $"main.[HASH].js"),
+                        Path.Combine("ClientApp", "dist", $"polyfills.[HASH].js"),
+                        Path.Combine("ClientApp", "dist", $"styles.[HASH].css"),
+                    })
+                },
+            };
+
         public override IEnumerable<string> ExpectedFilesAfterPublish =>
             base.ExpectedFilesAfterPublish
-            .Concat(new[]
-            {
-                Path.Combine("wwwroot", "favicon.ico"),
-                Path.Combine("ClientApp", "dist", "3rdpartylicenses.txt"),
-                Path.Combine("ClientApp", "dist", "index.html"),
-            })
-            .Concat(DotNetUtil.TargetFrameworkMoniker == "netcoreapp2.1" ?
-                new[]
-                {
-                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff2"),
-                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].svg"),
-                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].ttf"),
-                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].eot"),
-                    Path.Combine("ClientApp", "dist", "glyphicons-halflings-regular.[HASH].woff"),
-                    Path.Combine("ClientApp", "dist", $"inline.[HASH].bundle.js"),
-                    Path.Combine("ClientApp", "dist", $"main.[HASH].bundle.js"),
-                    Path.Combine("ClientApp", "dist", $"polyfills.[HASH].bundle.js"),
-                    Path.Combine("ClientApp", "dist", $"styles.[HASH].bundle.css"),
-                }
-                :
-                new[]
-                {
-                    Path.Combine("ClientApp", "dist", $"runtime.[HASH].js"),
-                    Path.Combine("ClientApp", "dist", $"main.[HASH].js"),
-                    Path.Combine("ClientApp", "dist", $"polyfills.[HASH].js"),
-                    Path.Combine("ClientApp", "dist", $"styles.[HASH].css"),
-                });
+            .Concat(_additionalFilesAfterPublish[DotNetUtil.TargetFrameworkMoniker]());
     }
 }
