@@ -17,15 +17,7 @@ namespace AspNetCoreSdkTests.Templates
         private IDictionary<string, Func<IEnumerable<string>>> _additionalObjFilesAfterBuild =>
             new Dictionary<string, Func<IEnumerable<string>>>()
             {
-                { "netcoreapp2.1", () =>
-                    _additionalObjFilesAfterBuild["netcoreapp2.2"]()
-                    .Concat(new[]
-                    {
-                        Path.Combine("Razor", RazorPath, "Home", "About.g.cshtml.cs"),
-                        Path.Combine("Razor", RazorPath, "Home", "Contact.g.cshtml.cs"),
-                    })
-                },
-                { "netcoreapp2.2", () => new[]
+                { "common", () => new[]
                     {
                         Path.Combine("Razor", RazorPath, "_ViewStart.g.cshtml.cs"),
                         Path.Combine("Razor", RazorPath, "Home", "Index.g.cshtml.cs"),
@@ -36,6 +28,15 @@ namespace AspNetCoreSdkTests.Templates
                         Path.Combine("Razor", RazorPath, "Shared", "Error.g.cshtml.cs"),
                     }
                 },
+                { "netcoreapp2.1", () =>
+                    _additionalObjFilesAfterBuild["common"]()
+                    .Concat(new[]
+                    {
+                        Path.Combine("Razor", RazorPath, "Home", "About.g.cshtml.cs"),
+                        Path.Combine("Razor", RazorPath, "Home", "Contact.g.cshtml.cs"),
+                    })
+                },
+                { "netcoreapp2.2", () => _additionalObjFilesAfterBuild["common"]() },
             };
 
         public override IEnumerable<string> ExpectedObjFilesAfterBuild =>
