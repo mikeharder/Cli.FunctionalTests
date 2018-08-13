@@ -27,7 +27,7 @@ namespace AspNetCoreSdkTests.Templates
                         Path.Combine("Razor", RazorPath, "Shared", "_Layout.g.cshtml.cs"),
                         Path.Combine("Razor", RazorPath, "Shared", "_ValidationScriptsPartial.g.cshtml.cs"),
                     }
-                }
+                },
                 { "netcoreapp2.1", () =>
                     _additionalObjFilesAfterBuild["common"]()
                     .Concat(new[]
