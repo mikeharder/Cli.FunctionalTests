@@ -39,32 +39,6 @@ namespace AspNetCoreSdkTests.Util
         {
             var info = RunDotNet("--info", workingDirectory: null);
 
-            // .NET Core SDK (reflecting any global.json):                                                                                                                                
-            //  Version:   2.1.302                                                                                                                                                        
-            //  Commit:    9048955601                                                                                                                                                     
-            //                                                                                                                                                                            
-            // Runtime Environment:                                                                                                                                                       
-            //  OS Name:     Windows                                                                                                                                                      
-            //  OS Version:  10.0.17134                                                                                                                                                   
-            //  OS Platform: Windows                                                                                                                                                      
-            //  RID:         win10-x64                                                                                                                                                    
-            //  Base Path:   e:\dotnet\rtm\dotnet-sdk-2.1.302-win-x64\sdk\2.1.302\                                                                                                        
-            //                                                                                                                                                                            
-            // Host (useful for support):                                                                                                                                                 
-            //   Version: 2.1.2                                                                                                                                                           
-            //   Commit:  811c3ce6c0                                                                                                                                                      
-            //                                                                                                                                                                            
-            // .NET Core SDKs installed:                                                                                                                                                  
-            //   2.1.302 [e:\dotnet\rtm\dotnet-sdk-2.1.302-win-x64\sdk]                                                                                                                   
-            //                                                                                                                                                                            
-            // .NET Core runtimes installed:                                                                                                                                              
-            //   Microsoft.AspNetCore.All 2.1.2 [e:\dotnet\rtm\dotnet-sdk-2.1.302-win-x64\shared\Microsoft.AspNetCore.All]                                                                
-            //   Microsoft.AspNetCore.App 2.1.2 [e:\dotnet\rtm\dotnet-sdk-2.1.302-win-x64\shared\Microsoft.AspNetCore.App]                                                                
-            //   Microsoft.NETCore.App 2.1.2 [e:\dotnet\rtm\dotnet-sdk-2.1.302-win-x64\shared\Microsoft.NETCore.App]                                                                      
-            //                                                                                                                                                                            
-            // To install additional .NET Core runtimes or SDKs:                                                                                                                          
-            //   https://aka.ms/dotnet-download                                                                                                                                           
-
             var sdkVersionString = Regex.Match(info, @"Version:\s*(\S+)").Groups[1].Value;
             var sdkVersion = SemanticVersion.Parse(sdkVersionString);
 
