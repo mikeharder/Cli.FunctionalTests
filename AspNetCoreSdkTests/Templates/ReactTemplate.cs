@@ -15,7 +15,7 @@ namespace AspNetCoreSdkTests.Templates
 
         protected override IEnumerable<string> NormalizeFilesAfterPublish(IEnumerable<string> filesAfterPublish)
         {
-            // Remove generated hashes since they may var by platform
+            // Remove generated hashes since they may vary by platform
             return base.NormalizeFilesAfterPublish(filesAfterPublish)
                 .Select(f => Regex.Replace(f, @"\.[0-9a-f]{8}\.", ".[HASH]."));
         }
