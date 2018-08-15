@@ -79,7 +79,6 @@ namespace AspNetCoreSdkTests.Templates
         {
             // A few files included in self-contained deployments contain version numbers in the filename, which must
             // be replaced so tests can pass on all versions.
-
             return base.NormalizeFilesAfterPublish(filesAfterPublish)
                 .Select(f => Regex.Replace(f, @"_amd64_amd64_[0-9\.]+\.dll$", "_amd64_amd64_[VERSION].dll"));
         }
