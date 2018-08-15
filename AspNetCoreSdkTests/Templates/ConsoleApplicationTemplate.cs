@@ -75,11 +75,14 @@ namespace AspNetCoreSdkTests.Templates
             base.ExpectedBinFilesAfterBuild
             .Concat(_additionalBinFilesAfterBuild[RuntimeIdentifier]());
 
-        // A few files included in self-contained deployments contain version numbers in the filename, which must
-        // be replaced so tests can pass on all versions.
-        public override IEnumerable<string> FilesAfterPublish =>
-            base.FilesAfterPublish
-            .Select(f => Regex.Replace(f, @"_amd64_amd64_[0-9\.]+\.dll$", "_amd64_amd64_[VERSION].dll"));
+        protected override IEnumerable<string> NormalizeFilesAfterPublish(IEnumerable<string> filesAfterPublish)
+        {
+            // A few files included in self-contained deployments contain version numbers in the filename, which must
+            // be replaced so tests can pass on all versions.
+
+            return base.NormalizeFilesAfterPublish(filesAfterPublish)
+                .Select(f => Regex.Replace(f, @"_amd64_amd64_[0-9\.]+\.dll$", "_amd64_amd64_[VERSION].dll"));
+        }
 
         private Func<IEnumerable<string>> _additionalFilesAfterPublishCommon = () => new[]
         {

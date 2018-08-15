@@ -83,8 +83,8 @@ namespace AspNetCoreSdkTests.Templates
         public IEnumerable<string> BinFilesAfterBuild => _filesAfterBuild.Value.BinFiles;
         public IEnumerable<string> ObjFilesAfterBuildIncremental => _filesAfterBuildIncremental.Value.ObjFiles;
         public IEnumerable<string> BinFilesAfterBuildIncremental => _filesAfterBuildIncremental.Value.BinFiles;
-        public virtual IEnumerable<string> FilesAfterPublish => _filesAfterPublish.Value;
-        public virtual IEnumerable<string> FilesAfterPublishIncremental => _filesAfterPublishIncremental.Value;
+        public IEnumerable<string> FilesAfterPublish => NormalizeFilesAfterPublish(_filesAfterPublish.Value);
+        public IEnumerable<string> FilesAfterPublishIncremental => NormalizeFilesAfterPublish(_filesAfterPublishIncremental.Value);
         public HttpResponseMessage HttpResponseAfterRun => _httpResponsesAfterRun.Value.Http;
         public HttpResponseMessage HttpsResponseAfterRun => _httpResponsesAfterRun.Value.Https;
         public string ServerOutputAfterRun => _httpResponsesAfterRun.Value.ServerOutput;
@@ -112,6 +112,12 @@ namespace AspNetCoreSdkTests.Templates
         // for temporary workarounds (e.g. changing TFM in csproj).
         protected virtual void AfterNew(string tempDir) { }
         
+        // Hook for subclasses to normalize files after publish (e.g. replacing hash codes)
+        protected virtual IEnumerable<string> NormalizeFilesAfterPublish(IEnumerable<string> filesAfterPublish)
+        {
+            return filesAfterPublish;
+        }
+
         private IEnumerable<string> GetObjFilesAfterRestore()
         {
             Directory.CreateDirectory(TempDir);
@@ -153,14 +159,6 @@ namespace AspNetCoreSdkTests.Templates
             // Publish depends on BuildIncremental
             _ = BinFilesAfterBuildIncremental;
 
-            // Workaround "EmbedAppNameInHost fails when calling build twice"
-            // https://github.com/dotnet/sdk/issues/2466
-            if (RuntimeIdentifier != RuntimeIdentifier.None)
-            {
-                IOUtil.DeleteFileIfExists(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
-                    RuntimeIdentifier.Name, "host", Name + RuntimeIdentifier.ExecutableFileExtension));
-            }
-
             DotNetUtil.Publish(TempDir, RuntimeIdentifier);
             return IOUtil.GetFiles(Path.Combine(TempDir, DotNetUtil.PublishOutput));
         }
@@ -169,14 +167,6 @@ namespace AspNetCoreSdkTests.Templates
         {
             // PublishIncremental depends on Publish
             _ = FilesAfterPublish;
-
-            // Workaround "EmbedAppNameInHost fails when calling build twice"
-            // https://github.com/dotnet/sdk/issues/2466
-            if (RuntimeIdentifier != RuntimeIdentifier.None)
-            {
-                IOUtil.DeleteFileIfExists(Path.Combine(TempDir, "obj", DotNetUtil.TargetFrameworkMoniker,
-                    RuntimeIdentifier.Name, "host", Name + RuntimeIdentifier.ExecutableFileExtension));
-            }
 
             DotNetUtil.Publish(TempDir, RuntimeIdentifier);
             return IOUtil.GetFiles(Path.Combine(TempDir, DotNetUtil.PublishOutput));

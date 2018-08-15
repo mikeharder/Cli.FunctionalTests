@@ -13,9 +13,12 @@ namespace AspNetCoreSdkTests.Templates
 
         public override string Name => "react";
 
-        // Remove generated hashes since they may var by platform
-        public override IEnumerable<string> FilesAfterPublish =>
-            base.FilesAfterPublish.Select(f => Regex.Replace(f, @"\.[0-9a-f]{8}\.", ".[HASH]."));
+        protected override IEnumerable<string> NormalizeFilesAfterPublish(IEnumerable<string> filesAfterPublish)
+        {
+            // Remove generated hashes since they may var by platform
+            return base.NormalizeFilesAfterPublish(filesAfterPublish)
+                .Select(f => Regex.Replace(f, @"\.[0-9a-f]{8}\.", ".[HASH]."));
+        }
 
         private IDictionary<string, Func<IEnumerable<string>>> _additionalFilesAfterPublish =>
             new Dictionary<string, Func<IEnumerable<string>>>()
